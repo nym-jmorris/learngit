@@ -24,3 +24,7 @@ Then, if you're feeling up to it, you can sync to github.  This is what everyone
 From there, create a pull request and review with anyone who needs it.
 
 I *think* I'm getting it.
+
+Look at that, I stumbled into markdown.
+
+*italics* **hhello** ***more*** 
