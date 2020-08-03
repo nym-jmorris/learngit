@@ -11,4 +11,4 @@ Can I commit this to the experiment branch?
 
 Can I delete a previous line?
 
-Look at me, I'm still adding edits and I have no idea what I'm doing...
+Look at me, I'm still adding edits and I have no idea what I'm doing
