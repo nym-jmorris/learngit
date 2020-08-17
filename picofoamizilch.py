@@ -1,4 +1,19 @@
-#let's try a game of pico fomi zilch
+
+"""
+let's try a game of pico fomi zilch
+
+We'll need:
+[x] to generate a number
+[x] Prompt for a guess
+[ ] test that it's suitable
+[ ] evaluate the guess against the number
+[ ] solicit guesses until matched
+
+play again?
+
+
+"""
+
 
 from random import randrange
 
@@ -14,21 +29,18 @@ def evalGuess(guess):
 
     try: 
         val = int(guess)
-        if val > -1 and val < 1000:
-            passStatus = True
-            
-        else: 
+        if val < 0 or  val > 999:
             print('Please enter a three digit positive integer.\n')
-            passStatus = False
+            evalStatus = False
+        else evalStatus = True
 
     except ValueError:
         print("Please enter a three digit positive integer.\n")
-        passStatus = False
+        evalStatus = False
     
-    return passStatus
+    return evalStatus
 
 def testGuess(guess):
-
     if int(guess[0])== a:
         print('Pico')
     if int(guess[1])== b:
@@ -52,6 +64,9 @@ def testGuess(guess):
 
     if guess == a+b+c:
         print('You win!')
+        passStatus = True
 
 
 guess = getGuess()
+evalStatus = evalGuess(guess)
+testStatus = testGuess(guess)
