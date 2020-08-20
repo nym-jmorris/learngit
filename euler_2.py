@@ -696,7 +696,7 @@ def numParse(number):
         hundreds = int(floor(number/100))
     if number - 100 * hundreds >= 20:
         tens = int(floor((number - hundreds * 100)/10))
-    if number - 100 * hundreds > 10 and number - 100 * hundreds < 20:
+    if number - 100 * hundreds >= 10 and number - 100 * hundreds < 20:
         teens = number - 100 * hundreds
     if number - 100 * hundreds - 10 * tens > 0 and teens ==0:
         ones = number - 100 * hundreds - 10 * tens 
@@ -731,7 +731,9 @@ def numParse(number):
         part2 = ''
         part2 = ''
     elif teens != 0:
-        if teens == 11:
+        if teens == 10:
+            part2 = 'ten'
+        elif teens == 11:
             part2 = 'eleven'
         elif teens == 12:
             part2 = 'twelve'
@@ -807,7 +809,12 @@ def numParse(number):
 
 longword = 0
 
-for i in range(1,1000):
-    longword += numParse(i)[1]
 
+
+for i in range(1,1000):
+    word = numParse(i)
+#    print('{:>3}: {:>20}'.format(str(i),word[0]))
+    longword += word[1]
+
+# one thousand == 11 characters...
 print(longword+11)
