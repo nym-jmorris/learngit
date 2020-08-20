@@ -168,7 +168,7 @@ while len(primes)<10001:
             print('Passing prime # {}'.format(len(primes)))
             print('Computation has taken {} seconds so far.'.format(time.time()-start_time))
             print('Prime density: {}'.format(len(primes)/pin))
-    pin+=1
+    pin+=2
     composites = []
 
 print('The {}th prime is {}.'.format(len(primes),primes[len(primes)-1]))
@@ -256,7 +256,7 @@ There exists exactly one Pythagorean triplet for which a + b + c = 1000.
 Find the product abc.
 '''
 
-triplets = []
+'''triplets = []
 
 def findTriplet():
     for k in range(1,1000):
@@ -273,3 +273,149 @@ def findTriplet():
                         return([i,j,k])
 
 triplet = findTriplet()
+'''
+
+# problem 10
+
+# The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
+# Find the sum of all the primes below two million.
+# answer = 142913828922
+
+# old code here: ----
+
+# import time
+# start_time = time.time()
+
+# primes = [2]
+# composites = []
+
+# #print(len(primes))
+
+# pin = 3
+
+# #200000: 73s
+# #300000: 228s
+# #500000: 
+
+# maxn = 300000
+
+# while primes[len(primes)-1]<maxn:
+#     for p in range(0,len(primes)-1):
+#         if pin % primes[p] == 0:
+#             pin+=2
+#             continue
+
+#     primes.append(pin)
+#     if len(primes)%1000==0:
+#         print('\nPassing prime # {}'.format(len(primes)))
+#         print('Prime value: {}'.format(pin))
+#         print('Computation has taken {} seconds so far.'.format(time.time()-start_time))
+#         print('Prime density: {}'.format(len(primes)/pin))
+        
+#     pin+=2
+
+# print('\nFinished!')
+# print('Last prime before {} is: {}'.format(maxn,primes[len(primes)-2]))
+# print('Computation has taken {} seconds so far.'.format(time.time()-start_time))
+# print('Prime density: {}'.format(len(primes)/pin))
+# print('The sum of the first {} primes is: {}'.format(len(primes)-1,sum(primes)-primes[len(primes)-1]))
+
+# print('The {}th prime is {}.'.format(len(primes),primes[len(primes)-1]))
+# print('Computation has taken {} seconds so far.'.format(time.time()-start_time))
+# print('Prime density: {}'.format(len(primes)/primes[len(primes)-1]))
+
+
+# end old code---
+
+
+# import time
+# from math import floor
+
+# time_start = time.time()
+
+# nmax = 2000000
+
+# primes = [2]
+
+# candidates = [True for iter in range(nmax)]
+
+
+# pin = 3
+
+# def updateSieve(prime):
+#     for i in range(0,floor(nmax/prime)):
+#         candidates[i*prime] = False
+#     return
+
+# def checkPrime(candidate):
+#     for p in primes:
+#         if candidate % p == 0:
+#             return
+#     primes.append(candidate)
+#     if len(primes)%1000 == 0:
+#         print('\nPrime # {} found in {} seconds.'.format(len(primes),time.time()-time_start))
+#         print('Prime value: {}'.format(candidate))
+#         print('Prime density: {}'.format(len(primes)/candidate))
+
+#     updateSieve(p)
+#     return
+
+
+# for i in range(2,nmax):
+#     if candidates[i] == True:
+#             checkPrime(i)
+
+# time_end = time.time()
+
+# print('There are {} primes below {}.'.format(len(primes),nmax))
+
+# print('\nFinished!')
+# print('Last prime before {} is: {}'.format(nmax,primes[len(primes)-1]))
+# print('Computation has taken {} seconds so far.'.format(time.time()-time_start))
+# print('Prime density: {}'.format(len(primes)/primes[len(primes)-1]))
+# print('The sum of the first {} primes is: {}'.format(len(primes),sum(primes)))
+
+import time
+from math import floor
+
+time_start = time.time()
+
+nmax = 2000000
+
+primes = []
+
+candidates = [True for iter in range(nmax)]
+
+def updateSieve(prime):
+    for i in range(0,floor(nmax/prime)):
+        candidates[i*prime] = False
+        try:
+            candidates[i*prime+prime] = False
+        except IndexError:
+            None
+        if (nmax-1)%prime == 0:
+            candidates[nmax-1] = False
+        
+    return
+
+
+for i in range(2,nmax):
+    if candidates[i] == True:
+        primes.append(i)
+        updateSieve(i)
+        if len(primes)%1000 == 0:
+            print('\nPrime # {} found in {} seconds.'.format(len(primes),time.time()-time_start))
+            print('Prime value: {}'.format(i))
+            print('Prime density: {}'.format(len(primes)/i))
+
+time_end = time.time()
+
+print('There are {} primes below {}.'.format(len(primes),nmax))
+
+print('\nFinished!')
+print('Last prime before {} is: {}'.format(nmax,primes[len(primes)-1]))
+print('Computation has taken {} seconds so far.'.format(time.time()-time_start))
+print('Prime density: {}'.format(len(primes)/primes[len(primes)-1]))
+print('The sum of the first {} primes is: {}\n'.format(len(primes),sum(primes)))
+
+# answer = 142913828922
