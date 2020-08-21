@@ -679,7 +679,7 @@ print('Time elapsed: {:06.2f} seconds'.format(time.time()-time_start))
 # NOTE: Do not count spaces or hyphens. For example, 342 (three hundred and forty-two)
 # contains 23 letters and 115 (one hundred and fifteen) contains 20 letters. 
 # The use of "and" when writing out numbers is in compliance with British usage.
-
+'''
 from math import floor
 
 def numParse(number):
@@ -818,3 +818,123 @@ for i in range(1,1000):
 
 # one thousand == 11 characters...
 print(longword+11)
+'''
+
+
+#problem 20
+# n! means n × (n − 1) × ... × 3 × 2 × 1
+
+# For example, 10! = 10 × 9 × ... × 3 × 2 × 1 = 3628800,
+# and the sum of the digits in the number 10! is 3 + 6 + 2 + 8 + 8 + 0 + 0 = 27.
+
+# Find the sum of the digits in the number 100!
+
+'''
+def factorial(n):
+    f = 1
+    for i in range(2,n+1):
+        f = f*i
+    return f
+
+def sumDigits(number):
+    nLength = len(str(number))
+    nSum = 0
+
+    for i in range(0,nLength):
+        nSum += int(str(number)[i])
+    return nSum
+
+print(factorial(100))
+print(sumDigits(factorial(100)))
+'''
+
+#problem 21
+
+# Let d(n) be defined as the sum of proper divisors of n (numbers less than n which divide evenly into n).
+# If d(a) = b and d(b) = a, where a ≠ b, then a and b are an amicable pair and each of a and b are called amicable numbers.
+
+# For example, the proper divisors of 220 are 1, 2, 4, 5, 10, 11, 20, 22, 44, 55 and 110; therefore d(220) = 284. The proper divisors of 284 are 1, 2, 4, 71 and 142; so d(284) = 220.
+
+# Evaluate the sum of all the amicable numbers under 10000.
+'''
+from math import sqrt
+from math import floor
+
+def getFactors(n):
+    factors =[]
+    for i in range(1,floor(sqrt(n))+1):
+        if n%i ==0:
+            factors.append(i)
+            factors.append(int(n/i))
+    factors = list(dict.fromkeys(factors))
+    factors.sort()
+    factors.pop(len(factors)-1)
+    return factors
+
+def dn(factors):
+    return sum(factors)
+
+amicable =[]
+
+for i in range(2,10000):
+    f = getFactors(i)
+    fsum = dn(f)
+    #print('{}: d(n) = {} | {}'.format(i,fsum,f))
+
+    if fsum == 1:
+        continue
+    if i == dn(getFactors(fsum)) and i != fsum:
+        amicable.append(i)
+
+
+for a in amicable:
+    gf = getFactors(a)
+    dngf = dn(gf)
+    print('dn({:4d})=   {:4d} | Factors: {}'.format(a,dngf,gf))
+    
+print(sum(amicable))
+'''
+
+
+#problem 22
+
+
+# Using names.txt (right click and 'Save Link/Target As...'), a 46K text file containing over five-thousand first names, 
+# begin by sorting it into alphabetical order. Then working out the alphabetical value for each name, multiply this 
+# value by its alphabetical position in the list to obtain a name score.
+
+# For example, when the list is sorted into alphabetical order, COLIN, which is worth 3 + 15 + 12 + 9 + 14 = 53, 
+# is the 938th name in the list. So, COLIN would obtain a score of 938 × 53 = 49714.
+
+# What is the total of all the name scores in the file?
+
+'''
+import csv
+
+import string
+
+
+with open('p022_names.txt', newline='') as f:
+    reader = csv.reader(f)
+    
+    data = list(reader)
+
+nameList = data[0]
+
+nameList.sort()
+
+
+namesum = 0
+position = 0
+namescore = 0
+
+for i in range (0,len(nameList)):
+    namesum = 0
+    position += 1
+    for j in range(0,len(nameList[i])):
+        namesum += (string.ascii_uppercase.index(nameList[i][j]))+1
+    #print('Name = {:>10}, position = {}, nameScore = {}, combinedScore = {}, running score = {}.'.format(nameList[i],position,namesum,position*namesum,namescore + namesum*position))
+    namescore += namesum * position
+    
+print(namescore)
+'''
