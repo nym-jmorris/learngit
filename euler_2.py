@@ -1080,3 +1080,89 @@ for a in range(0,int(needed/100) + 1):
                                 ways+=1
 print(ways+1) # +1 for the 2£ coin.
 '''
+
+
+#Problem 35
+
+# The number, 197, is called a circular prime because all rotations of the digits: 197, 971, and 719, are themselves prime.
+
+# There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, and 97.
+
+# How many circular primes are there below one million?
+
+import time
+
+from math import floor
+
+print('Starting...')
+
+time_start = time.time()
+
+nmax = 1000000
+
+primes = []
+
+candidates = [True for iter in range(nmax)]
+
+def updateSieve(prime):
+    for i in range(0,floor(nmax/prime)):
+        candidates[i*prime] = False
+        try:
+            candidates[i*prime+prime] = False
+        except IndexError:
+            None       
+    return
+
+print('Generating primes...({})'.format(time.time()-time_start))
+
+for i in range(2,nmax):
+    if candidates[i] == True:
+        primes.append(i)
+        updateSieve(i)
+
+print('Primes generated...({})'.format(time.time()-time_start))
+
+# rotate primes
+# check for rotation in list of primes...
+
+def checkPrime(candidate):
+    if candidate in primes:
+        return True
+    else: return False
+
+def rotatePrime(prime,i):
+    pstr = str(prime)
+    pr = pstr[-len(pstr)+i:]+pstr[0:i]
+    return int(pr)
+
+#test = 456
+
+#print(rotatePrime(456,1))
+cprimes = []
+
+print('Starting the rotations...')
+for prime in primes:
+    loops = 0
+    primetest = []
+    # the "in" is too slow...
+    while loops < len(str(prime)):
+        tempprime = rotatePrime(prime,loops)
+        # if tempprime %2 ==0:
+        #     continue
+        if tempprime in primes: 
+            isPrime = 1 
+        else: 
+            isPrime = 0
+            continue
+            #loops  = len(str(prime))
+
+
+        print('{} tested and result is {}'.format(prime,isPrime))
+        primetest.append(isPrime)
+        loops +=1
+    if sum(primetest) == len(str(prime)):
+        cprimes.append(prime)
+
+print(cprimes)
+print('There are {} circular primes below 1 million.'.format(len(cprimes)))
+print('It only took {} seconds to figure this out.'.format(time.time()-time_start))
