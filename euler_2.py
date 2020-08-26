@@ -938,3 +938,147 @@ for i in range (0,len(nameList)):
     
 print(namescore)
 '''
+
+#problem 25
+
+
+# The Fibonacci sequence is defined by the recurrence relation:
+
+#     Fn = Fn−1 + Fn−2, where F1 = 1 and F2 = 1.
+
+# Hence the first 12 terms will be:
+
+#     F1 = 1
+#     F2 = 1
+#     F3 = 2
+#     F4 = 3
+#     F5 = 5
+#     F6 = 8
+#     F7 = 13
+#     F8 = 21
+#     F9 = 34
+#     F10 = 55
+#     F11 = 89
+#     F12 = 144
+
+# The 12th term, F12, is the first term to contain three digits.
+
+# What is the index of the first term in the Fibonacci sequence to contain 1000 digits?
+
+'''
+def fib(n):
+    if n ==0:
+        return 1
+    elif n ==1:
+        return 1
+    else:
+        return fib(n-1)+fib(n-2)
+
+flen = 1
+i = 2
+limit = 3
+while flen < limit:
+    fibi = fib(i)
+    flen = len(str(fibi))
+    i += 1
+print('First term with more than {} digits is {}. The fibonacci number is {}'.format(limit-1,i,fibi))
+'''
+
+#problem 26
+
+# A unit fraction contains 1 in the numerator. 
+# The decimal representation of the unit fractions with denominators 2 to 10 are given:
+
+#     1/2	= 	0.5
+#     1/3	= 	0.(3)
+#     1/4	= 	0.25
+#     1/5	= 	0.2
+#     1/6	= 	0.1(6)
+#     1/7	= 	0.(142857)
+#     1/8	= 	0.125
+#     1/9	= 	0.(1)
+#     1/10	= 	0.1 
+
+# Where 0.1(6) means 0.166666..., and has a 1-digit recurring cycle. 
+# It can be seen that 1/7 has a 6-digit recurring cycle.
+
+# Find the value of d < 1000 for which 1/d contains the longest recurring cycle in its decimal fraction part.
+'''
+from math import floor
+
+d = 1000
+d = 10
+
+# floating point math will ruin the party.
+# here's 1/3: 0.33333333333333331482962
+
+digits= [0 for iter in range(d)]
+#print(digits)
+
+def decimalize(num,denom):
+    i = 0
+    while num < denom:
+        num = num * 10
+        i+=1
+    dvnd = int(floor(num/denom))
+    rmdr = num%denom
+
+    return i,dvnd,rmdr
+'''
+#problem 30
+
+
+# Surprisingly there are only three numbers that can be written as the sum of fourth powers of their digits:
+
+#     1634 = 14 + 64 + 34 + 44
+#     8208 = 84 + 24 + 04 + 84
+#     9474 = 94 + 44 + 74 + 44
+
+# As 1 = 14 is not a sum it is not included.
+
+# The sum of these numbers is 1634 + 8208 + 9474 = 19316.
+
+# Find the sum of all the numbers that can be written as the sum of fifth powers of their digits.
+
+# how to set an upper limit for this?
+'''
+from math import floor
+
+fifths =[]
+
+numlen = len(str(i))
+
+'''
+
+# problem 31
+
+# In the United Kingdom the currency is made up of pound (£) and pence (p). 
+# There are eight coins in general circulation:
+
+#     1p, 2p, 5p, 10p, 20p, 50p, £1 (100p), and £2 (200p).
+
+# It is possible to make £2 in the following way:
+
+#     1×£1 + 1×50p + 2×20p + 1×5p + 1×2p + 3×1p
+
+# How many different ways can £2 be made using any number of coins?
+
+pounds = 0 
+p50    = 0
+p20    = 0
+p10    = 0
+p5     = 0
+p2     = 0
+p1     = 0
+
+from math import floor
+ways = 0
+iters = 0
+
+needed = 200
+
+for a in range(0,needed/100 + 1):
+    for b in range(needed)
+
+    
+        
