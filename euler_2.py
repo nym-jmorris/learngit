@@ -1090,13 +1090,8 @@ print(ways+1) # +1 for the 2£ coin.
 
 # How many circular primes are there below one million?
 
-import time
-
 from math import floor
 
-print('Starting...')
-
-time_start = time.time()
 
 nmax = 1000000
 
@@ -1113,14 +1108,13 @@ def updateSieve(prime):
             None       
     return
 
-print('Generating primes...({})'.format(time.time()-time_start))
 
 for i in range(2,nmax):
     if candidates[i] == True:
         primes.append(i)
         updateSieve(i)
 
-print('Primes generated...({})'.format(time.time()-time_start))
+print('Primes generated')
 
 # rotate primes
 # check for rotation in list of primes...
@@ -1140,29 +1134,27 @@ def rotatePrime(prime,i):
 #print(rotatePrime(456,1))
 cprimes = []
 
-print('Starting the rotations...')
 for prime in primes:
     loops = 0
     primetest = []
     # the "in" is too slow...
+    print('Testing {}...'.format(prime))
     while loops < len(str(prime)):
-        tempprime = rotatePrime(prime,loops)
-        # if tempprime %2 ==0:
-        #     continue
-        if tempprime in primes: 
+        testing = rotatePrime(prime,loops)
+        if testing%2 == 0:
+            loops = len(str(prime))
+            continue
+        if testing%25 == 0:
+            loops = len(str(prime))
+            continue
+        if testing in primes: 
             isPrime = 1 
         else: 
-            isPrime = 0
+            loops = len(str(prime))
             continue
-            #loops  = len(str(prime))
-
-
-        print('{} tested and result is {}'.format(prime,isPrime))
         primetest.append(isPrime)
         loops +=1
     if sum(primetest) == len(str(prime)):
         cprimes.append(prime)
-
 print(cprimes)
 print('There are {} circular primes below 1 million.'.format(len(cprimes)))
-print('It only took {} seconds to figure this out.'.format(time.time()-time_start))
