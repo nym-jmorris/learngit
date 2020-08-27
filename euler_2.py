@@ -1089,10 +1089,11 @@ print(ways+1) # +1 for the 2£ coin.
 # There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, and 97.
 
 # How many circular primes are there below one million?
-
+'''
 from math import floor
+import time
 
-
+time0 = time.time()
 nmax = 1000000
 
 primes = []
@@ -1109,11 +1110,13 @@ def updateSieve(prime):
     return
 
 
+time1 = time.time()
 for i in range(2,nmax):
     if candidates[i] == True:
         primes.append(i)
         updateSieve(i)
 
+time2 = time.time()
 print('Primes generated')
 
 # rotate primes
@@ -1134,6 +1137,8 @@ def rotatePrime(prime,i):
 #print(rotatePrime(456,1))
 cprimes = []
 
+time3 = time.time()
+
 for prime in primes:
     loops = 0
     primetest = []
@@ -1141,12 +1146,13 @@ for prime in primes:
     print('Testing {}...'.format(prime))
     while loops < len(str(prime)):
         testing = rotatePrime(prime,loops)
-        if testing%2 == 0:
+        if testing%2 == 0 and prime > 2:
             loops = len(str(prime))
             continue
         if testing%25 == 0:
             loops = len(str(prime))
             continue
+        # this is the slow part...
         if testing in primes: 
             isPrime = 1 
         else: 
@@ -1156,5 +1162,234 @@ for prime in primes:
         loops +=1
     if sum(primetest) == len(str(prime)):
         cprimes.append(prime)
+
+time4 = time.time()
 print(cprimes)
 print('There are {} circular primes below 1 million.'.format(len(cprimes)))
+print('Time 1: {} \nTime 2: {}\nTime 3: {}\nTime 4:{}'.format(time1-time0,time2-time0,time3-time0,time4-time0))
+'''
+
+
+#Problem 54
+# In the card game poker, a hand consists of five cards and are ranked, 
+# from lowest to highest, in the following way:
+
+#     High Card: Highest value card.
+#     One Pair: Two cards of the same value.
+#     Two Pairs: Two different pairs.
+#     Three of a Kind: Three cards of the same value.
+#     Straight: All cards are consecutive values.
+#     Flush: All cards of the same suit.
+#     Full House: Three of a kind and a pair.
+#     Four of a Kind: Four cards of the same value.
+#     Straight Flush: All cards are consecutive values of same suit.
+#     Royal Flush: Ten, Jack, Queen, King, Ace, in same suit.
+
+# The cards are valued in the order:
+# 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace.
+
+# If two players have the same ranked hands then the rank made up of the highest value wins; 
+# for example, a pair of eights beats a pair of fives (see example 1 below). 
+# But if two ranks tie, for example, both players have a pair of queens, 
+# then highest cards in each hand are compared (see example 4 below); 
+# if the highest cards tie then the next highest cards are compared, and so on.
+
+# Consider the following five hands dealt to two players:
+# Hand	 	Player 1	 	Player 2	 	Winner
+# 1	 	5H 5C 6S 7S KD
+# Pair of Fives
+# 	 	2C 3S 8S 8D TD
+# Pair of Eights
+# 	 	Player 2
+# 2	 	5D 8C 9S JS AC
+# Highest card Ace
+# 	 	2C 5C 7D 8S QH
+# Highest card Queen
+# 	 	Player 1
+# 3	 	2D 9C AS AH AC
+# Three Aces
+# 	 	3D 6D 7D TD QD
+# Flush with Diamonds
+# 	 	Player 2
+# 4	 	4D 6S 9H QH QC
+# Pair of Queens
+# Highest card Nine
+# 	 	3D 6D 7H QD QS
+# Pair of Queens
+# Highest card Seven
+# 	 	Player 1
+# 5	 	2H 2D 4C 4D 4S
+# Full House
+# With Three Fours
+# 	 	3C 3D 3S 9S 9D
+# Full House
+# with Three Threes
+# 	 	Player 1
+
+# The file, poker.txt, contains one-thousand random hands dealt to two players. 
+# Each line of the file contains ten cards (separated by a single space): the first five 
+# are Player 1's cards and the last five are Player 2's cards. 
+# You can assume that all hands are valid (no invalid characters or repeated cards), 
+# each player's hand is in no specific order, and in each hand there is a clear winner.
+
+# How many hands does Player 1 win?
+
+
+import csv
+
+#import string
+
+
+with open('p054_poker.txt', newline='') as f:
+    reader = csv.reader(f)
+    
+    data = list(reader)
+
+def evalofKind(hand):
+    khand = []
+    for i in range(0,5):
+        pos = 3*i
+        if hand[pos] =='T':
+            khand.append(10)
+        elif hand[pos] =='J':
+            khand.append(11)
+        elif hand[pos] =='Q':
+            khand.append(12)
+        elif hand[pos] =='K':
+            khand.append(13)
+        elif hand[pos] =='A':
+            khand.append(14)
+        else: khand.append(int(hand[pos]))
+    khand.sort()
+    if khand[0] == khand[3] or khand[1] == khand[4]:
+        return 'Four of a Kind'
+    if  khand[0] == khand[2] or khand[2] == khand[4]:
+        return 'Three of a Kind'
+    if (khand[0] == khand[1] and khand[2] == khand[3]) or \
+        (khand[1] == khand[2] and khand[3] == khand[4]) or \
+            (khand[0] == khand[1] and khand[3] == khand[4]):
+            return 'Two Pair'
+    for j in range(0,4):
+        if khand[j] == khand[j+1]:
+            return 'One Pair'
+    return None
+
+def evalFullHouse(hand):
+    fhand = []
+    for i in range(0,5):
+        pos = 3*i
+        if hand[pos] =='T':
+            fhand.append(10)
+        elif hand[pos] =='J':
+            fhand.append(11)
+        elif hand[pos] =='Q':
+            fhand.append(12)
+        elif hand[pos] =='K':
+            fhand.append(13)
+        elif hand[pos] =='A':
+            fhand.append(14)
+        else: khand.append(int(hand[pos]))
+    khand.sort()
+
+    if (fhand[0]==fhand[2] and fhand[3]==fhand[4]) or \
+        (fhand[0]==fhand[1] and fhand[2]==fhand[4]):
+        return 'Full House'
+    else: return None
+
+
+
+def evalFlush(hand):
+    suit = []
+    for i in range(0,5):
+        suit_pos = 3*i+1
+        if i == 0:
+            suit.append(hand[suit_pos])
+        else:
+            if i > 0 and hand[suit_pos] == suit[0]:
+                suit.append(hand[suit_pos])
+            else: return None
+    return 'Flush'
+
+def evalStraight(hand):
+    strt = []
+    for i in range(0,5):
+        str_pos = 3*i
+        if hand[str_pos] =='T':
+            strt.append(10)
+        elif hand[str_pos] =='J':
+            strt.append(11)
+        elif hand[str_pos] =='Q':
+            strt.append(12)
+        elif hand[str_pos] =='K':
+            strt.append(13)
+        elif hand[str_pos] =='A':
+            strt.append(14)
+        else: strt.append(int(hand[str_pos]))
+    strt.sort()
+    if strt[1] == strt[0]+1 and strt[2] == strt[0]+2 and strt[3] == strt[0]+3 and strt[4] == strt[0]+4:
+        return 'Straight'
+    else: return None
+
+#this needs work...
+def highCard(hand):
+    strt = []
+    for i in range(0,5):
+        str_pos = 3*i
+        if hand[str_pos] =='T':
+            strt.append(10)
+        elif hand[str_pos] =='J':
+            strt.append(11)
+        elif hand[str_pos] =='Q':
+            strt.append(12)
+        elif hand[str_pos] =='K':
+            strt.append(13)
+        elif hand[str_pos] =='A':
+            strt.append(14)
+        else: strt.append(int(hand[str_pos]))
+    strt.sort()
+
+    hcard = strt[4]
+    if hcard == 14:
+        return 'Ace'
+    elif hcard == 13:
+        return 'King'
+    elif hcard == 12:
+        return 'Queen'
+    elif hcard == 11:
+        return 'Jack'
+    else: return str(hcard)
+
+
+
+for d in data[:]:
+    hand1 = str(d)[2:16]
+    hand2 = str(d)[17:31]
+    high1 = highCard(hand1)
+    high2 = highCard(hand2)
+    if(evalFlush(hand1)) == 'Flush':
+        print ('This hand {} is a flush, {} high'.format(hand1,high1))
+    if(evalFlush(hand2)) == 'Flush':
+        print ('This hand {} is a flush, {} high'.format(hand2,high2))
+    if(evalStraight(hand1))== 'Straight':
+        print ('This hand {} is a straight, {} high'.format(hand1,high1))
+    if(evalStraight(hand2))== 'Straight':
+        print ('This hand {} is a straight, {} high'.format(hand2,high2))
+
+    handeval = evalofKind(hand1)
+    if(handeval) is not None:
+        print ('This hand {} is a {}, {} high'.format(hand1,handeval,high1))
+
+    handeval = evalofKind(hand2)
+    if(handeval) is not None:
+        print ('This hand {} is a {}, {} high'.format(hand2,handeval,high2))
+    
+    # if(evalThreeKind(hand1))== 'Three of a Kind':
+    #     print ('This hand {} is a Three of a Kind'.format(hand1))
+    # if(evalThreeKind(hand2))== 'Three of a Kind':
+    #     print ('This hand {} is a Three of a Kind'.format(hand2))
+
+    # print(hand1)
+    # print(hand2)
+    # print('Hand 1 is a {}'.format(evalHand(hand1)))
+    # print('Hand 1 is a {}\n'.format(evalHand(hand2)))
+
