@@ -1234,11 +1234,41 @@ print('Time 1: {} \nTime 2: {}\nTime 3: {}\nTime 4:{}'.format(time1-time0,time2-
 
 # How many hands does Player 1 win?
 
+#what we need:
+    # Split hands
+    # Evaluate hands
+    # flushStraight
+    # 4/3/2pair/1pair
+    # FullHouse
+    # Nothing
+    # Three high cards
+        # Full House: Dominant 3, Pair, Zero
+        # Straight: High Card, Zero, Zero
+        # Flush: High, 2 High, 3 High
+        # FourKind: Four Card, One Card, Zero
+        # ThreeKind: Three Card, High Card, 2 High
+        # Two Pair: High Pair, Low Pair, One Card
+        # One Pair: Pair, High Card, 2 High
+        # Nothing: High, 2 High, 3 High
+
+    # compare hands
+        # Assign a value to each type (Flush, Straight, etc)
+        # create a 3-tuple for each hand
+        # compare hand[0]
+            # if needed, compare hand[1]
+            # if needed, compare hand[2]
+
+# straight flush = 100
+# four kind = 90
+# full house = 80
+# flush = 70
+# straight = 60
+# 3Kind = 50
+# Two Pair = 40
+# Pair = 30
+# Nothing = 0
 
 import csv
-
-#import string
-
 
 with open('p054_poker.txt', newline='') as f:
     reader = csv.reader(f)
@@ -1272,7 +1302,7 @@ def evalofKind(hand):
     for j in range(0,4):
         if khand[j] == khand[j+1]:
             return 'One Pair'
-    return None
+    return 'High Card'
 
 def evalFullHouse(hand):
     fhand = []
@@ -1288,13 +1318,13 @@ def evalFullHouse(hand):
             fhand.append(13)
         elif hand[pos] =='A':
             fhand.append(14)
-        else: khand.append(int(hand[pos]))
-    khand.sort()
+        else: fhand.append(int(hand[pos]))
+    fhand.sort()
 
     if (fhand[0]==fhand[2] and fhand[3]==fhand[4]) or \
         (fhand[0]==fhand[1] and fhand[2]==fhand[4]):
         return 'Full House'
-    else: return None
+    else: return 'Not Full House'
 
 
 
@@ -1307,7 +1337,7 @@ def evalFlush(hand):
         else:
             if i > 0 and hand[suit_pos] == suit[0]:
                 suit.append(hand[suit_pos])
-            else: return None
+            else: return 'Not Flush'
     return 'Flush'
 
 def evalStraight(hand):
@@ -1328,68 +1358,131 @@ def evalStraight(hand):
     strt.sort()
     if strt[1] == strt[0]+1 and strt[2] == strt[0]+2 and strt[3] == strt[0]+3 and strt[4] == strt[0]+4:
         return 'Straight'
-    else: return None
+    else: return 'Not Straight'
 
-#this needs work...
-def highCard(hand):
-    strt = []
+#results = [[0,0,0,0] for iter in range(len(data))]
+
+# need to return 3 high cards [two pair and tie-breaker]
+def highCard(hand,status):
+    hhand = []
     for i in range(0,5):
         str_pos = 3*i
         if hand[str_pos] =='T':
-            strt.append(10)
+            hhand.append(10)
         elif hand[str_pos] =='J':
-            strt.append(11)
+            hhand.append(11)
         elif hand[str_pos] =='Q':
-            strt.append(12)
+            hhand.append(12)
         elif hand[str_pos] =='K':
-            strt.append(13)
+            hhand.append(13)
         elif hand[str_pos] =='A':
-            strt.append(14)
-        else: strt.append(int(hand[str_pos]))
-    strt.sort()
+            hhand.append(14)
+        else: hhand.append(int(hand[str_pos]))
 
-    hcard = strt[4]
-    if hcard == 14:
-        return 'Ace'
-    elif hcard == 13:
-        return 'King'
-    elif hcard == 12:
-        return 'Queen'
-    elif hcard == 11:
-        return 'Jack'
-    else: return str(hcard)
+    hhand.sort()
 
+    if status in ['Straight','Straight Flush']:
+        return [hhand[4],hhand[3],hhand[2]]
 
+    elif status == 'Flush':
+        return [hhand[4],hhand[3],hhand[2]]
 
-for d in data[:]:
+    elif status == 'Full House':
+        if hhand[2] == hhand[0]:
+            return [hhand[0],hhand[4],0]
+        else: return [hhand[4],hhand[0],0]
+
+    elif status == 'Four of a Kind':
+        if hhand[0]==hhand[1]:
+            return [hhand[0],hhand[4],0]
+        else: return[hhand[4],hhand[0],0]
+
+    elif status == 'Three of a Kind':
+        if hhand[0] == hhand[2]:
+            return [hhand[0],hhand[4],hhand[3]]
+        elif hhand[1] == hhand[3]:
+            return [hhand[2],hhand[4],hhand[0]]
+        else: return [hhand[4],hhand[1],hhand[0]]
+
+    elif status == 'Two Pair':
+        if hhand[4] == hhand[3] and hhand[2] == hhand[1]:
+            #return[hhand[4],hhand[2],hhand[0]]
+            return [50,50,50]
+        elif hhand[4] == hhand[3] and hhand[1] == hhand[0]:
+            #return [hhand[4],hhand[1],hhand[2]]
+            return [40,40,40]
+        else: 
+            #return[hhand[3],hhand[1],hhand[4]]
+            return [30,30,30]
+
+    elif status == 'One Pair':
+        if hhand[4]==hhand[3]:
+            return [hhand[4],hhand[2],hhand[1]]
+        elif hhand[3]==hhand[2]:
+            return [hhand[3],hhand[4],hhand[1]]
+        elif hhand[2] == hhand[1]:
+            return [hhand[2],hhand[4],hhand[3]]
+        else: return [hhand[1],hhand[4],hhand[3]]
+    #high cards here
+    #else: return [hhand[4],hhand[3],hhand[2]]
+    else: return [100,100,100]
+
+def evalHand(hand):
+    if evalFlush(hand)=='Flush' and evalStraight(hand) == 'Straight':
+        return [100,'Straight Flush']
+    if evalFlush(hand)=='Flush':
+        return [70,'Flush']
+    if evalStraight(hand)=='Straight':
+        return [60,'Straight']
+    if evalFullHouse(hand) == 'FullHouse':
+        return [80,'Full House']
+    kindHand = evalofKind(hand)
+    if kindHand in ('Four of a Kind', 'Three of a Kind','Two Pair','One Pair'):
+        if kindHand == 'Four of a Kind':
+            return [90,'Four of a Kind']
+        elif kindHand == 'Three of a Kind':
+            return [50,'Three of a Kind'] 
+        elif kindHand == 'Two Pair':
+            return [40,'Two Pair']
+        else: return [30,'One Pair']
+    else: return [0,'High Card']
+
+for d in data[10:15]:
     hand1 = str(d)[2:16]
     hand2 = str(d)[17:31]
-    high1 = highCard(hand1)
-    high2 = highCard(hand2)
-    if(evalFlush(hand1)) == 'Flush':
-        print ('This hand {} is a flush, {} high'.format(hand1,high1))
-    if(evalFlush(hand2)) == 'Flush':
-        print ('This hand {} is a flush, {} high'.format(hand2,high2))
-    if(evalStraight(hand1))== 'Straight':
-        print ('This hand {} is a straight, {} high'.format(hand1,high1))
-    if(evalStraight(hand2))== 'Straight':
-        print ('This hand {} is a straight, {} high'.format(hand2,high2))
 
-    handeval = evalofKind(hand1)
-    if(handeval) is not None:
-        print ('This hand {} is a {}, {} high'.format(hand1,handeval,high1))
+    handStatus1 = evalHand(hand1)
+    handStatus2 = evalHand(hand2)
 
-    handeval = evalofKind(hand2)
-    if(handeval) is not None:
-        print ('This hand {} is a {}, {} high'.format(hand2,handeval,high2))
+
+    high1 = highCard(hand1,handStatus1)
+    high2 = highCard(hand2,handStatus2)
+
     
-    # if(evalThreeKind(hand1))== 'Three of a Kind':
-    #     print ('This hand {} is a Three of a Kind'.format(hand1))
-    # if(evalThreeKind(hand2))== 'Three of a Kind':
-    #     print ('This hand {} is a Three of a Kind'.format(hand2))
+    print('Player A holds: {} | {}, {},{},{} high'.format(hand1,handStatus1[1],high1[0],high1[1],high1[2]))
+    print('Player B holds: {} | {}, {},{},{} high\n'.format(hand2,handStatus2[1],high2[0],high2[1],high2[2]))
 
-    # print(hand1)
-    # print(hand2)
-    # print('Hand 1 is a {}'.format(evalHand(hand1)))
-    # print('Hand 1 is a {}\n'.format(evalHand(hand2)))
+    # if evalFlush(hand1) == 'Flush' and evalStraight(hand1) == 'Straight':
+    #     print('This hand {} is a Straight Flush, {} high'.format(hand1,high1[0]))
+    
+    # if evalFlush(hand2) == 'Flush' and evalStraight(hand2) == 'Straight':
+    #     print('This hand {} is a Straight Flush, {} high'.format(hand2,high2[0]))
 
+
+    # if(evalFlush(hand1)) == 'Flush':
+    #     print ('This hand {} is a flush, {} high'.format(hand1,high1[0]))
+    # if(evalFlush(hand2)) == 'Flush':
+    #     print ('This hand {} is a flush, {} high'.format(hand2,high2[0]))
+    
+    # if(evalStraight(hand1))== 'Straight':
+    #     print ('This hand {} is a straight, {} high'.format(hand1,high1))
+    # if(evalStraight(hand2))== 'Straight':
+    #     print ('This hand {} is a straight, {} high'.format(hand2,high2))
+
+    # handeval = evalofKind(hand1)
+    # if(handeval) is not None:
+    #     print ('This hand {} is a {}, {} high'.format(hand1,handeval,high1))
+    # handeval = evalofKind(hand2)
+    # if(handeval) is not None:
+    #     print ('This hand {} is a {}, {} high'.format(hand2,handeval,high2))
+    
